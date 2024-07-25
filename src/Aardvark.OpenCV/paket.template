@@ -1,0 +1,16 @@
+type project
+id Aardvark.OpenCV
+authors Aardvark Platform Team
+owners Aardvark Platform Team
+projectUrl http://github.com/aardvark-platform
+licenseUrl http://www.apache.org/licenses/LICENSE-2.0.txt
+repositoryType git
+repositoryUrl https://github.com/aardvark-platform/aardvark.base
+description
+    Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
+include-pdbs true
+files
+	..\..\libs\Release\OpenCvSharp\OpenCvSharp.Blob.dll          ==> lib\netstandard2.0
+	..\..\libs\Release\OpenCvSharp\OpenCvSharp.dll               ==> lib\netstandard2.0
+	..\..\libs\Release\OpenCvSharp\OpenCvSharp.Extensions.dll    ==> lib\netstandard2.0
+	..\..\libs\Release\OpenCvSharp\OpenCvSharp.UserInterface.dll ==> lib\netstandard2.0
