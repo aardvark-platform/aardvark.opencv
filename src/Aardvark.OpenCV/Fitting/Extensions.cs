@@ -33,9 +33,9 @@ namespace Aardvark.OpenCV
                 int N = 1;
 
                 x = new Vector<double>(K * N);
-                var mA = new CvMat(M, K, MatType.CV_64FC1, A.Array);    //: A (M*K)
-                var mX = new CvMat(K, N, MatType.CV_64FC1, x.Array);    //: x (K*N)
-                var mB = new CvMat(M, N, MatType.CV_64FC1, b.Array);    //: b (M*N)
+                var mA = CvMat.FromPixelData(M, K, MatType.CV_64FC1, A.Array);    //: A (M*K)
+                var mX = CvMat.FromPixelData(K, N, MatType.CV_64FC1, x.Array);    //: x (K*N)
+                var mB = CvMat.FromPixelData(M, N, MatType.CV_64FC1, b.Array);    //: b (M*N)
 
                 success = OpenCvSharp.Cv2.Solve(mA, mB, mX, method);
             }
@@ -158,10 +158,10 @@ namespace Aardvark.OpenCV
             UT = new Matrix<double>(M, MM);
             VT = new Matrix<double>(N, N);
 
-            var mM = new CvMat(M, N, MatType.CV_64FC1, A.Array);
-            var ms = new CvMat(N, 1, MatType.CV_64FC1, S.Array);
-            var mu = new CvMat(M, MM, MatType.CV_64FC1, UT.Array);
-            var mv = new CvMat(N, N, MatType.CV_64FC1, VT.Array);
+            var mM = CvMat.FromPixelData(M, N, MatType.CV_64FC1, A.Array);
+            var ms = CvMat.FromPixelData(N, 1, MatType.CV_64FC1, S.Array);
+            var mu = CvMat.FromPixelData(M, MM, MatType.CV_64FC1, UT.Array);
+            var mv = CvMat.FromPixelData(N, N, MatType.CV_64FC1, VT.Array);
 
             OpenCvSharp.SVD.Compute(mM, ms, mu, mv, OpenCvSharp.SVD.Flags.ModifyA);
         }
@@ -178,9 +178,9 @@ namespace Aardvark.OpenCV
             S = new Matrix<double>(N, 1);
             UT = new Matrix<double>(M, M);
 
-            var mM = new CvMat(M, N, MatType.CV_64FC1, A.Array);
-            var ms = new CvMat(N, 1, MatType.CV_64FC1, S.Array);
-            var mu = new CvMat(M, M, MatType.CV_64FC1, UT.Array);
+            var mM = CvMat.FromPixelData(M, N, MatType.CV_64FC1, A.Array);
+            var ms = CvMat.FromPixelData(N, 1, MatType.CV_64FC1, S.Array);
+            var mu = CvMat.FromPixelData(M, M, MatType.CV_64FC1, UT.Array);
             var mv = new CvMat(N, N, MatType.CV_64FC1);
 
             OpenCvSharp.SVD.Compute(mM, ms, mu, mv, OpenCvSharp.SVD.Flags.ModifyA);
@@ -198,10 +198,10 @@ namespace Aardvark.OpenCV
             S = new Matrix<double>(N, 1);
             VT = new Matrix<double>(N, N);
 
-            var mM = new CvMat(M, N, MatType.CV_64FC1, A.Array);
-            var ms = new CvMat(N, 1, MatType.CV_64FC1, S.Array);
+            var mM = CvMat.FromPixelData(M, N, MatType.CV_64FC1, A.Array);
+            var ms = CvMat.FromPixelData(N, 1, MatType.CV_64FC1, S.Array);
             var mu = new CvMat(M, M, MatType.CV_64FC1);
-            var mv = new CvMat(N, N, MatType.CV_64FC1, VT.Array);
+            var mv = CvMat.FromPixelData(N, N, MatType.CV_64FC1, VT.Array);
 
             OpenCvSharp.SVD.Compute(mM, ms, mu, mv, OpenCvSharp.SVD.Flags.ModifyA);
         }
@@ -216,10 +216,10 @@ namespace Aardvark.OpenCV
             var u = new double[4 * 4];
             var v = new double[4 * 4];
 
-            var pM = new CvMat(4, 4, MatType.CV_64FC1, M.ToArray());
-            var ps = new CvMat(4, 1, MatType.CV_64FC1, s);
-            var pu = new CvMat(4, 4, MatType.CV_64FC1, u);
-            var pv = new CvMat(4, 4, MatType.CV_64FC1, v);
+            var pM = CvMat.FromPixelData(4, 4, MatType.CV_64FC1, M.ToArray());
+            var ps = CvMat.FromPixelData(4, 1, MatType.CV_64FC1, s);
+            var pu = CvMat.FromPixelData(4, 4, MatType.CV_64FC1, u);
+            var pv = CvMat.FromPixelData(4, 4, MatType.CV_64FC1, v);
 
             OpenCvSharp.SVD.Compute(pM, ps, pu, pv, OpenCvSharp.SVD.Flags.ModifyA);
 
@@ -239,9 +239,9 @@ namespace Aardvark.OpenCV
             int rows = 4;
             int cols = 4;
 
-            var mat0 = new CvMat(rows, cols, MatType.CV_64FC1, M.ToArray());
-            var mat1 = new CvMat(rows, 1, MatType.CV_64FC1, VV);
-            var mat2 = new CvMat(rows, cols, MatType.CV_64FC1, EV);
+            var mat0 = CvMat.FromPixelData(rows, cols, MatType.CV_64FC1, M.ToArray());
+            var mat1 = CvMat.FromPixelData(rows, 1, MatType.CV_64FC1, VV);
+            var mat2 = CvMat.FromPixelData(rows, cols, MatType.CV_64FC1, EV);
 
             Cv2.Eigen(mat0, mat1, mat2);
 

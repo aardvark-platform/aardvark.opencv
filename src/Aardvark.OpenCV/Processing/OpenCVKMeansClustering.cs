@@ -47,11 +47,11 @@ namespace Aardvark.OpenCV
             }
 
             //-- termination criteria
-            var term = new TermCriteria(CriteriaType.MaxIter | CriteriaType.Eps, 1000, 0.0001);
+            var term = new TermCriteria(CriteriaTypes.MaxIter | CriteriaTypes.Eps, 1000, 0.0001);
 
-            var mA = new CvMat(m, n, MatType.CV_32FC1, A.Array);
-            var mB = new CvMat(m, 1, MatType.CV_32SC1, B.Array);
-            var mC = new CvMat(k, n, MatType.CV_32FC1, C.Array);
+            var mA = CvMat.FromPixelData(m, n, MatType.CV_32FC1, A.Array);
+            var mB = CvMat.FromPixelData(m, 1, MatType.CV_32SC1, B.Array);
+            var mC = CvMat.FromPixelData(k, n, MatType.CV_32FC1, C.Array);
 
             //Report.BeginTimed("Computing Range K-Means ....");
 

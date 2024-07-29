@@ -9,8 +9,3 @@ repositoryUrl https://github.com/aardvark-platform/aardvark.base
 description
     Aardvark is an open-source platform for visual computing, real-time graphics and visualization.
 include-pdbs true
-files
-	..\..\libs\Release\OpenCvSharp\OpenCvSharp.Blob.dll          ==> lib\netstandard2.0
-	..\..\libs\Release\OpenCvSharp\OpenCvSharp.dll               ==> lib\netstandard2.0
-	..\..\libs\Release\OpenCvSharp\OpenCvSharp.Extensions.dll    ==> lib\netstandard2.0
-	..\..\libs\Release\OpenCvSharp\OpenCvSharp.UserInterface.dll ==> lib\netstandard2.0
