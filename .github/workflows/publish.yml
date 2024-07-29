@@ -2,7 +2,7 @@ name: Publish
 on:
   push:
     branches:
-      - test
+      - master
     paths:
       - RELEASE_NOTES.md
       - .github/workflows/publish.yml
@@ -23,9 +23,9 @@ jobs:
         run: dotnet paket restore
       - name: Build
         shell: cmd
-        run: dotnet build -c Release src\Aardvark.sln
+        run: dotnet build -c Release src\Aardvark.OpenCV.sln
       - name: Test
-        run: dotnet test src\Aardvark.sln -c Release --no-build --nologo --logger:"console;verbosity=normal"
+        run: dotnet test src\Aardvark.OpenCV.sln -c Release --no-build --nologo --logger:"console;verbosity=normal"
       - name: Pack
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
