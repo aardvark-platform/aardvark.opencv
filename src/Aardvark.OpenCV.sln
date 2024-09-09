@@ -5,7 +5,7 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.OpenCV", "Aardvark.OpenCV\Aardvark.OpenCV.csproj", "{BC1776B2-A92F-4056-B779-80ABD9C8963C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aardvark.OpenCV.Tests", "Aardvark.OpenCV.Tests\Aardvark.OpenCV.Tests.csproj", "{BC131623-6EAC-4C1F-B407-644E19298651}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "Aardvark.OpenCV.Tests", "Aardvark.OpenCV.Tests\Aardvark.OpenCV.Tests.fsproj", "{431C5E75-DA70-44DC-BD61-8727C8BF5719}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{BC1776B2-A92F-4056-B779-80ABD9C8963C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC1776B2-A92F-4056-B779-80ABD9C8963C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC1776B2-A92F-4056-B779-80ABD9C8963C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BC131623-6EAC-4C1F-B407-644E19298651}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BC131623-6EAC-4C1F-B407-644E19298651}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BC131623-6EAC-4C1F-B407-644E19298651}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BC131623-6EAC-4C1F-B407-644E19298651}.Release|Any CPU.Build.0 = Release|Any CPU
+		{431C5E75-DA70-44DC-BD61-8727C8BF5719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{431C5E75-DA70-44DC-BD61-8727C8BF5719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{431C5E75-DA70-44DC-BD61-8727C8BF5719}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{431C5E75-DA70-44DC-BD61-8727C8BF5719}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
