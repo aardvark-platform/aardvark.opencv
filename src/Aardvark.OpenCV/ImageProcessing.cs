@@ -18,29 +18,10 @@ namespace Aardvark.OpenCV
         public void Dispose() => Handle.Free();
     }
 
-    internal static class PinningExtensions
+    internal static class Extensions
     {
         public static GCHandleDiposable Pin(this object obj)
             => new (GCHandle.Alloc(obj, GCHandleType.Pinned));
-    }
-
-    public static class ImageProcessing
-    {
-        [OnAardvarkInit]
-        public static void Init()
-        {
-            PixImage<byte>.SetScaledFun(ScaledOpenCV);
-            PixImage<sbyte>.SetScaledFun(ScaledOpenCV);
-            PixImage<ushort>.SetScaledFun(ScaledOpenCV);
-            PixImage<short>.SetScaledFun(ScaledOpenCV);
-            PixImage<uint>.SetScaledFun(ScaledOpenCV);
-            PixImage<int>.SetScaledFun(ScaledOpenCV);
-            PixImage<ulong>.SetScaledFun(ScaledOpenCV);
-            PixImage<long>.SetScaledFun(ScaledOpenCV);
-            PixImage<Half>.SetScaledFun(ScaledOpenCV);
-            PixImage<float>.SetScaledFun(ScaledOpenCV);
-            PixImage<double>.SetScaledFun(ScaledOpenCV);
-        }
 
         private static readonly Dictionary<Type, Func<int, MatType>> matTypes = new()
         {
@@ -53,7 +34,7 @@ namespace Aardvark.OpenCV
             { typeof(double), MatType.CV_64FC },
         };
 
-        private static MatType ToMatType(this Type type, int channels)
+        public static MatType ToMatType(this Type type, int channels)
         {
             if (matTypes.TryGetValue(type, out var toMatType)) return toMatType(channels);
             else throw new NotSupportedException($"Channel type {type} is not supported.");
@@ -67,14 +48,29 @@ namespace Aardvark.OpenCV
             { ImageInterpolation.Lanczos, InterpolationFlags.Lanczos4 },
         };
 
-        private static InterpolationFlags ToInterpolationFlags(this ImageInterpolation interpolation)
+        public static InterpolationFlags ToInterpolationFlags(this ImageInterpolation interpolation)
         {
             if (interpolationFlags.TryGetValue(interpolation, out InterpolationFlags flags)) return flags;
             else throw new NotSupportedException($"Filter {interpolation} is not supported.");
         }
+    }
 
-        public static Volume<T> ScaledOpenCV<T>(this Volume<T> src, V2d scaleFactor, ImageInterpolation interpolation)
+    public sealed class PixProcessor : IPixProcessor
+    {
+        public string Name => "OpenCV";
+
+        public PixProcessorCaps Capabilities => PixProcessorCaps.Scale;
+
+        [OnAardvarkInit]
+        public static void Init()
         {
+            PixImage.AddProcessor(Instance);
+        }
+
+        public PixImage<T> Scale<T>(PixImage<T> image, V2d scaleFactor, ImageInterpolation interpolation)
+        {
+            var src = image.Volume;
+
             if (!src.HasImageWindowLayout())
             {
                 throw new ArgumentException($"Volume must be in image layout (Delta = {src.Delta}).");
@@ -104,10 +100,23 @@ namespace Aardvark.OpenCV
             var dstMat = CvMat.FromPixelData(dstSize.Y, dstSize.X, matType, dstPtr);
             Cv2.Resize(srcMat, dstMat, new Size(dstSize.X, dstSize.Y), interpolation: interpolation.ToInterpolationFlags());
 
-            return dst;
+            return new (image.Format, dst);
         }
 
-        public static PixImage<T> ScaledOpenCV<T>(this PixImage<T> src, V2d scaleFactor, ImageInterpolation interpolation)
-            => new (src.Format, src.Volume.ScaledOpenCV(scaleFactor, interpolation));
+        public PixImage<T> Rotate<T>(PixImage<T> image, double angleInRadians, bool resize, ImageInterpolation interpolation,
+                                     ImageBorderType borderType = ImageBorderType.Const,
+                                     T border = default)
+            => null;
+
+        public PixImage<T> Remap<T>(PixImage<T> image, Matrix<float> mapX, Matrix<float> mapY, ImageInterpolation interpolation,
+                                    ImageBorderType borderType = ImageBorderType.Const,
+                                    T border = default)
+            => null;
+
+        private PixProcessor() { }
+
+        private static readonly Lazy<PixProcessor> _instance = new(() => new PixProcessor());
+
+        public static PixProcessor Instance => _instance.Value;
     }
 }

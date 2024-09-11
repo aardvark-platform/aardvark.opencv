@@ -1,7 +1,6 @@
 ﻿namespace Aardvark.OpenCV.Benchmarks
 
 open Aardvark.Base
-open Aardvark.OpenCV
 open BenchmarkDotNet.Attributes
 
 module ``Image Processing Benchmarks`` =
@@ -27,9 +26,8 @@ module ``Image Processing Benchmarks`` =
 
         [<Benchmark(Description = "Aardvark (Tensors)", Baseline = true)>]
         member x.AardvarkTensors() =
-            let volume = Aardvark.Base.TensorExtensions.Scaled(image.Volume, scaleFactor, x.Interpolation)
-            PixImage<float32>(image.Format, volume)
+            Aardvark.Base.PixProcessor.Instance.Scale(image, scaleFactor, x.Interpolation)
 
         [<Benchmark>]
         member x.OpenCV() =
-            ImageProcessing.ScaledOpenCV(image, scaleFactor, x.Interpolation)
+            Aardvark.OpenCV.PixProcessor.Instance.Scale(image, scaleFactor, x.Interpolation)

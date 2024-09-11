@@ -1,7 +1,6 @@
 ﻿namespace Aardvark.OpenCV.Tests
 
 open Aardvark.Base
-open Aardvark.OpenCV
 open NUnit.Framework
 open FsUnit
 
@@ -45,11 +44,8 @@ module ``Image Processing Tests`` =
             else
                 pi
 
-        let result = ImageProcessing.ScaledOpenCV(src, scaleFactor, filter)
-
-        let reference =
-            let volume = Aardvark.Base.TensorExtensions.Scaled(src.Volume, scaleFactor, filter)
-            new PixImage<float32>(src.Format, volume)
+        let result = Aardvark.OpenCV.PixProcessor.Instance.Scale(src, scaleFactor, filter)
+        let reference = Aardvark.Base.PixProcessor.Instance.Scale(src, scaleFactor, filter)
 
         let psnr = PixImage.peakSignalToNoiseRatio result reference
         psnr |> should be (greaterThan 20.0)
