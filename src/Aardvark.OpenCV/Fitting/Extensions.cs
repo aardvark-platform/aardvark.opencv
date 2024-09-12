@@ -22,25 +22,19 @@ namespace Aardvark.OpenCV
         /// </summary>
         public static bool SolveLinear(this Matrix<double> A, Vector<double> b, out Vector<double> x, DecompTypes method)
         {
-            var success = false;
-            lock (OpenCvLock.Lock)
-            {
-                //  Ax = b
-                //   x = inv(A) * b
-                // M*K x K*N = M*N
-                int M = (int)A.SY; //Rows
-                int K = (int)A.SX; //Cols
-                int N = 1;
+            //  Ax = b
+            //   x = inv(A) * b
+            // M*K x K*N = M*N
+            int M = (int)A.SY; //Rows
+            int K = (int)A.SX; //Cols
+            int N = 1;
 
-                x = new Vector<double>(K * N);
-                var mA = CvMat.FromPixelData(M, K, MatType.CV_64FC1, A.Array);    //: A (M*K)
-                var mX = CvMat.FromPixelData(K, N, MatType.CV_64FC1, x.Array);    //: x (K*N)
-                var mB = CvMat.FromPixelData(M, N, MatType.CV_64FC1, b.Array);    //: b (M*N)
+            x = new Vector<double>(K * N);
+            var mA = CvMat.FromPixelData(M, K, MatType.CV_64FC1, A.Array);    //: A (M*K)
+            var mX = CvMat.FromPixelData(K, N, MatType.CV_64FC1, x.Array);    //: x (K*N)
+            var mB = CvMat.FromPixelData(M, N, MatType.CV_64FC1, b.Array);    //: b (M*N)
 
-                success = OpenCvSharp.Cv2.Solve(mA, mB, mX, method);
-            }
-
-            return success;
+            return Cv2.Solve(mA, mB, mX, method);
         }
 
         /// <summary>
