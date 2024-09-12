@@ -81,6 +81,20 @@ namespace Aardvark.OpenCV
 
         public static GCHandleDiposable ToMat<T>(this Volume<T> volume, MatType matType, int elementSize, out CvMat result)
             => volume.Data.ToMat(volume.Size.XY, volume.Delta.XY, volume.FirstIndex, matType, elementSize, out result);
+
+        public static Scalar ToScalar<T>(this T[] color, Col.Format format)
+        {
+            var result = new Scalar();
+
+            if (color != null)
+            {
+                var order = format.ChannelOrder();
+                for (var i = 0; i < Fun.Min(color.Length, format.ChannelCount()); i++)
+                    result[i] = Convert.ToDouble(color[order[i]]);
+            }
+
+            return result;
+        }
     }
 
     #endregion
@@ -89,7 +103,7 @@ namespace Aardvark.OpenCV
     {
         public string Name => "OpenCV";
 
-        public PixProcessorCaps Capabilities => PixProcessorCaps.Scale | PixProcessorCaps.Remap;
+        public PixProcessorCaps Capabilities => PixProcessorCaps.Scale | PixProcessorCaps.Rotate | PixProcessorCaps.Remap;
 
         [OnAardvarkInit]
         public static void Init()
@@ -135,10 +149,74 @@ namespace Aardvark.OpenCV
 
         #region Rotate
 
+        // TODO: Change the interface to accept T[] as border value
+        /// <inheritdoc cref="Rotate{T}(PixImage{T}, double, bool, ImageInterpolation, ImageBorderType, T)"/>
         public PixImage<T> Rotate<T>(PixImage<T> image, double angleInRadians, bool resize, ImageInterpolation interpolation,
                                      ImageBorderType borderType = ImageBorderType.Const,
-                                     T border = default)
-            => null;
+                                     T[] border = default)
+        {
+            var src = image.Volume;
+
+            if (!src.HasImageWindowLayout())
+            {
+                throw new ArgumentException($"Volume must be in image layout (Delta = {src.Delta}).");
+            }
+
+            var matType = typeof(T).ToMatType(image.ChannelCount);
+            var elementSize = typeof(T).GetCLRSize();
+
+            var srcCenter = image.Size.ToV2d() * 0.5;
+
+            // This already takes the handedness of the image coordinate system into account.
+            // See: https://docs.opencv.org/4.10.0/da/d54/group__imgproc__transform.html#gafbbc470ce83812914a70abfb604f4326
+            var rotMat =
+                Cv2.GetRotationMatrix2D(
+                    new Point2f((float)srcCenter.X, (float)srcCenter.Y),
+                    -angleInRadians.DegreesFromRadians(),
+                    1.0
+                );
+
+            var dstSize = image.Volume.Size;
+            if (resize)
+            {
+                // Compute bounds of rotated image
+                // See: https://stackoverflow.com/questions/3231176/how-to-get-size-of-a-rotated-rectangle
+                var cos = rotMat.At<double>(0, 0);
+                var sin = rotMat.At<double>(1, 0);
+                var cosAbs = cos.Abs();
+                var sinAbs = sin.Abs();
+                dstSize.X = (long)(image.Width * cosAbs + image.Height * sinAbs + 0.5);
+                dstSize.Y = (long)(image.Width * sinAbs + image.Height * cosAbs + 0.5);
+
+                // Adjust transformation matrix for new center
+                // We describe the inverse transformation (i.e. from dst to src).
+                // Shift by -dstCenter -> rotate CW -> shift by srcCenter.
+                // See: https://math.stackexchange.com/questions/2093314/rotation-matrix-of-rotation-around-a-point-other-than-the-origin
+                var dstCenter = dstSize.XY.ToV2d() * 0.5;
+                rotMat.At<double>(0, 2) = -dstCenter.X * cos + dstCenter.Y * sin + srcCenter.X;
+                rotMat.At<double>(1, 2) = -dstCenter.X * sin - dstCenter.Y * cos + srcCenter.Y;
+            }
+
+            var dst = dstSize.CreateImageVolume<T>();
+
+            using var _src = src.ToMat(matType, elementSize, out var srcMat);
+            using var _dst = dst.ToMat(matType, elementSize, out var dstMat);
+
+            Cv2.WarpAffine(
+                srcMat, dstMat, rotMat,
+                new Size((int)dst.SX, (int)dst.SY),
+                interpolation.ToInterpolationFlags(false) | InterpolationFlags.WarpInverseMap,
+                borderType.ToBorderTypes(),
+                (borderType == ImageBorderType.Const) ? border.ToScalar(image.Format) : new()
+            );
+
+            return new(image.Format, dst);
+        }
+
+        public PixImage<T> Rotate<T>(PixImage<T> image, double angleInRadians, bool resize, ImageInterpolation interpolation,
+                                     ImageBorderType borderType,
+                                     T border)
+            => Rotate(image, angleInRadians, resize, interpolation, borderType, new T[] { border, border, border, border });
 
         #endregion
 
@@ -173,20 +251,11 @@ namespace Aardvark.OpenCV
             using var _x = mapX.ToMat(MatType.CV_32FC1, 4, out var mapXMat);
             using var _y = mapY.ToMat(MatType.CV_32FC1, 4, out var mapYMat);
 
-            Scalar borderValue = new();
-            if (borderType == ImageBorderType.Const && border != null)
-            {
-                var order = image.Format.ChannelOrder();
-
-                for (var i = 0; i < Fun.Min(border.Length, 4); i++)
-                    borderValue[i] = Convert.ToDouble(border[order[i]]);
-            }
-
             Cv2.Remap(
                 srcMat, dstMat, mapXMat, mapYMat,
                 interpolation.ToInterpolationFlags(false),
                 borderType.ToBorderTypes(),
-                borderValue
+                (borderType == ImageBorderType.Const) ? border.ToScalar(image.Format) : new()
             );
 
             return new (image.Format, dst);

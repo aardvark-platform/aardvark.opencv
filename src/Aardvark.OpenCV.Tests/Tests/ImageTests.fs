@@ -14,6 +14,7 @@ module ``Image Processing Tests`` =
         let private randomValues : Type -> (unit -> obj) =
             LookupTable.lookup [
                 typeof<float32>, rnd.UniformFloat >> box
+                typeof<uint8>,   rnd.UniformUInt >> uint8 >> box
                 typeof<uint16>,  rnd.UniformUInt >> uint16 >> box
                 typeof<int32>,   rnd.UniformInt >> box
             ]
@@ -61,7 +62,7 @@ module ``Image Processing Tests`` =
         Aardvark.Init()
 
     [<Theory>]
-    let ``Scaling`` (filter: ImageInterpolation) (sub: bool) =
+    let ``Scale`` (filter: ImageInterpolation) (sub: bool) =
         let src = PixImage.generate<float32> Col.Format.RGBA sub
         let scaleFactor = V2d(0.2345, 1.6789)
 
@@ -72,7 +73,7 @@ module ``Image Processing Tests`` =
         psnr |> should be (greaterThan 20.0)
 
     [<Theory>]
-    let ``Remapping`` (sub: bool) =
+    let ``Remap`` (sub: bool) =
         let src = PixImage.generate<float32> Col.Format.RGBA sub
 
         let result =
@@ -100,7 +101,7 @@ module ``Image Processing Tests`` =
         psnr |> should be (greaterThan 20.0)
 
     [<Theory>]
-    let ``Remapping (border type)`` (borderType: ImageBorderType) (sub: bool) =
+    let ``Remap (border type)`` (borderType: ImageBorderType) (sub: bool) =
         let src = PixImage.generate<uint16> Col.Format.BGRA sub
         let border = [| 1us; 2us; 3us; 4us |]
 
@@ -138,3 +139,43 @@ module ``Image Processing Tests`` =
 
         let psnr = PixImage.peakSignalToNoiseRatio result expected
         psnr |> should equal infinity
+
+    [<Theory>]
+    let ``Rotate`` (resize: bool) (sub: bool) =
+        let src = PixImage.generate<uint8> Col.Format.BGRA sub
+        let angle = -Constant.PiTimesFour + rnd.UniformDouble() * Constant.PiTimesFour * 2.0
+
+        let rotated =
+            Aardvark.OpenCV.PixProcessor.Instance.Rotate(src, angle, resize, ImageInterpolation.Linear, border = [| 255uy; 0uy; 0uy; 255uy |])
+
+        let remapped =
+            let dstSize =
+                if resize then
+                    let srcSize = V2d src.Size.XY
+                    let cos = abs <| cos angle
+                    let sin = abs <| sin angle
+
+                    V2l(
+                        int64 (srcSize.X * cos + srcSize.Y * sin + 0.5),
+                        int64 (srcSize.X * sin + srcSize.Y * cos + 0.5)
+                    )
+
+                else
+                    src.SizeL
+
+            let mapX = Matrix<float32>(dstSize)
+            let mapY = Matrix<float32>(dstSize)
+
+            // Note: Positive angle -> clockwise rotation in the image coordinate system
+            let mat =
+                let srcCenter = v2f src.Size * 0.5f
+                let dstCenter = v2f dstSize * 0.5f
+                M33f.Translation srcCenter * M33f.RotationZ(float32 angle) * M33f.Translation -dstCenter
+
+            mapX.SetByCoord(fun x y -> V2l(x, y) |> v2f |> Mat.transformPos mat |> Vec.x) |> ignore
+            mapY.SetByCoord(fun x y -> V2l(x, y) |> v2f |> Mat.transformPos mat |> Vec.y) |> ignore
+
+            Aardvark.OpenCV.PixProcessor.Instance.Remap(src, mapX, mapY, ImageInterpolation.Linear, border = [| 255uy; 0uy; 0uy; 255uy |])
+
+        let psnr = PixImage.peakSignalToNoiseRatio rotated remapped
+        psnr |> should be (greaterThan 20.0)
