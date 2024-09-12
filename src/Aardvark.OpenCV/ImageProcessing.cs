@@ -182,7 +182,7 @@ namespace Aardvark.OpenCV
                 // Compute bounds of rotated image
                 // See: https://stackoverflow.com/questions/3231176/how-to-get-size-of-a-rotated-rectangle
                 var cos = rotMat.At<double>(0, 0);
-                var sin = rotMat.At<double>(1, 0);
+                var sin = rotMat.At<double>(0, 1);
                 var cosAbs = cos.Abs();
                 var sinAbs = sin.Abs();
                 dstSize.X = (long)(image.Width * cosAbs + image.Height * sinAbs + 0.5);
@@ -193,8 +193,8 @@ namespace Aardvark.OpenCV
                 // Shift by -dstCenter -> rotate CW -> shift by srcCenter.
                 // See: https://math.stackexchange.com/questions/2093314/rotation-matrix-of-rotation-around-a-point-other-than-the-origin
                 var dstCenter = dstSize.XY.ToV2d() * 0.5;
-                rotMat.At<double>(0, 2) = -dstCenter.X * cos + dstCenter.Y * sin + srcCenter.X;
-                rotMat.At<double>(1, 2) = -dstCenter.X * sin - dstCenter.Y * cos + srcCenter.Y;
+                rotMat.At<double>(0, 2) = -dstCenter.X * cos - dstCenter.Y * sin + srcCenter.X;
+                rotMat.At<double>(1, 2) =  dstCenter.X * sin - dstCenter.Y * cos + srcCenter.Y;
             }
 
             var dst = dstSize.CreateImageVolume<T>();
