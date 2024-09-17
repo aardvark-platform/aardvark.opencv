@@ -1,3 +1,6 @@
+### 1.0.2
+- Switched to minimal build of OpenCV library (Windows only)
+
 ### 1.0.1
 - Implemented IPixProcessor for scaling, rotating, and remapping images
 - Removed internal lock
