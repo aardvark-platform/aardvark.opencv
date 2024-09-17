@@ -1,0 +1,115 @@
+diff --git a/src/OpenCvSharpExtern/CMakeLists.txt b/src/OpenCvSharpExtern/CMakeLists.txt
+index 4371d2f6..4d5ca954 100644
+--- a/src/OpenCvSharpExtern/CMakeLists.txt
++++ b/src/OpenCvSharpExtern/CMakeLists.txt
+@@ -9,19 +9,20 @@ IF(APPLE)
+     link_directories(/usr/local/lib)
+ ENDIF()
+ 
+-file(GLOB OPENCVSHARP_FILES *.cpp)
++file(GLOB OPENCVSHARP_FILES core*.cpp imgp*.cpp std*.cpp)
++# file(GLOB OPENCVSHARP_FILES *.cpp)
+ 
+ find_package(OpenCV REQUIRED)
+ 
+ # iconv support isn't automatic on some systems
+-if(CMAKE_VERSION VERSION_GREATER "3.11")
+-  find_package(Iconv QUIET)
+-  if(Iconv_FOUND)
+-    ocv_target_link_libraries(${the_module} Iconv::Iconv)
+-  else()
+-    ocv_target_compile_definitions(${the_module} PRIVATE "NO_ICONV=1")
+-  endif()
+-endif()
++# if(CMAKE_VERSION VERSION_GREATER "3.11")
++#   find_package(Iconv QUIET)
++#   if(Iconv_FOUND)
++#     ocv_target_link_libraries(${the_module} Iconv::Iconv)
++#   else()
++#     ocv_target_compile_definitions(${the_module} PRIVATE "NO_ICONV=1")
++#   endif()
++# endif()
+ 
+ if(OpenCV_FOUND)
+ 	include_directories(${OpenCV_INCLUDE_DIRS})
+diff --git a/src/OpenCvSharpExtern/include_opencv.h b/src/OpenCvSharpExtern/include_opencv.h
+index d65eb67e..a9e4c65b 100644
+--- a/src/OpenCvSharpExtern/include_opencv.h
++++ b/src/OpenCvSharpExtern/include_opencv.h
+@@ -39,34 +39,34 @@
+ #include <opencv2/highgui/highgui_winrt.hpp>
+ #endif
+ #include <opencv2/core/utils/logger.hpp>
+-#include <opencv2/highgui/highgui_c.h>
++//#include <opencv2/highgui/highgui_c.h>
+ #include <opencv2/imgproc/imgproc_c.h>
+-#include <opencv2/shape.hpp>
+-#include <opencv2/stitching.hpp>
+-#include <opencv2/video.hpp>
++//#include <opencv2/shape.hpp>
++//#include <opencv2/stitching.hpp>
++//#include <opencv2/video.hpp>
+ #ifndef _WINRT_DLL
+-#include <opencv2/superres.hpp>
+-#include <opencv2/superres/optical_flow.hpp>
++//#include <opencv2/superres.hpp>
++//#include <opencv2/superres/optical_flow.hpp>
+ #endif
+ 
+ // opencv_contrib
+-#include <opencv2/aruco.hpp>
+-#include <opencv2/aruco/charuco.hpp>
+-#include <opencv2/bgsegm.hpp>
+-#include <opencv2/img_hash.hpp>
+-#include <opencv2/line_descriptor.hpp>
+-#include <opencv2/optflow.hpp>
+-#include <opencv2/quality.hpp>
+-#include <opencv2/tracking.hpp>
+-#include <opencv2/xfeatures2d.hpp>
+-#include <opencv2/ximgproc.hpp>
+-#include <opencv2/xphoto.hpp>
++//#include <opencv2/aruco.hpp>
++//#include <opencv2/aruco/charuco.hpp>
++//#include <opencv2/bgsegm.hpp>
++//#include <opencv2/img_hash.hpp>
++//#include <opencv2/line_descriptor.hpp>
++//#include <opencv2/optflow.hpp>
++//#include <opencv2/quality.hpp>
++//#include <opencv2/tracking.hpp>
++//#include <opencv2/xfeatures2d.hpp>
++//#include <opencv2/ximgproc.hpp>
++//#include <opencv2/xphoto.hpp>
+ #ifndef _WINRT_DLL
+-#include <opencv2/wechat_qrcode.hpp>
+-#include <opencv2/dnn.hpp>
+-#include <opencv2/dnn_superres.hpp>
+-#include <opencv2/face.hpp>
+-#include <opencv2/text.hpp>
++//#include <opencv2/wechat_qrcode.hpp>
++//#include <opencv2/dnn.hpp>
++//#include <opencv2/dnn_superres.hpp>
++//#include <opencv2/face.hpp>
++//#include <opencv2/text.hpp>
+ #endif
+ 
+ #include <vector>
+diff --git a/src/OpenCvSharpExtern/std_vector.h b/src/OpenCvSharpExtern/std_vector.h
+index b0699d03..5a398832 100644
+--- a/src/OpenCvSharpExtern/std_vector.h
++++ b/src/OpenCvSharpExtern/std_vector.h
+@@ -448,6 +448,7 @@ CVAPI(void) vector_Mat_delete(std::vector<cv::Mat>* vector)
+ }
+ #pragma endregion
+ 
++#if 0
+ #pragma region cv::ml::DTrees::Node
+ 
+ CVAPI(std::vector<cv::ml::DTrees::Node>*) vector_DTrees_Node_new1()
+@@ -582,4 +583,5 @@ CVAPI(void) vector_KeyLine_delete(std::vector<cv::line_descriptor::KeyLine>* vec
+     delete vector;
+ }
+ #endif
+-#pragma endregion
+\ No newline at end of file
++#pragma endregion
++#endif

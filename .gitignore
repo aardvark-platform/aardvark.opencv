@@ -35,3 +35,4 @@ Aardvark.log
 **/.vs
 .idea
 src/Aardvark.sln.DotSettings.user
+build_minimal
