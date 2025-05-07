@@ -1,9 +1,7 @@
 # Aardvark.OpenCV
 
+![Build](https://github.com/aardvark-platform/aardvark.opencv/workflows/Build/badge.svg)
 ![Publish](https://github.com/aardvark-platform/aardvark.opencv/workflows/Publish/badge.svg)
-![Windows](https://github.com/aardvark-platform/aardvark.opencv/workflows/Windows/badge.svg)
-![MacOS](https://github.com/aardvark-platform/aardvark.opencv/workflows/MacOS/badge.svg)
-![Linux](https://github.com/aardvark-platform/aardvark.opencv/workflows/Linux/badge.svg)
 
 
 [![NuGet](https://badgen.net/nuget/v/Aardvark.OpenCV)](https://www.nuget.org/packages/Aardvark.OpenCV/)
