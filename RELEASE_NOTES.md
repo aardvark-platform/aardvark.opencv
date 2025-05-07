@@ -1,3 +1,6 @@
+### 1.0.3
+- Dispose unmanaged OpenCV handles
+
 ### 1.0.2
 - Switched to minimal build of OpenCV library (Windows only)
 
