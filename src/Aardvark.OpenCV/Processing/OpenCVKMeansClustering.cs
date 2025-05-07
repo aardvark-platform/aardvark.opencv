@@ -49,13 +49,13 @@ namespace Aardvark.OpenCV
             //-- termination criteria
             var term = new TermCriteria(CriteriaTypes.MaxIter | CriteriaTypes.Eps, 1000, 0.0001);
 
-            var mA = CvMat.FromPixelData(m, n, MatType.CV_32FC1, A.Array);
-            var mB = CvMat.FromPixelData(m, 1, MatType.CV_32SC1, B.Array);
-            var mC = CvMat.FromPixelData(k, n, MatType.CV_32FC1, C.Array);
+            using var mA = CvMat.FromPixelData(m, n, MatType.CV_32FC1, A.Array);
+            using var mB = CvMat.FromPixelData(m, 1, MatType.CV_32SC1, B.Array);
+            using var mC = CvMat.FromPixelData(k, n, MatType.CV_32FC1, C.Array);
 
             //Report.BeginTimed("Computing Range K-Means ....");
 
-            var cvCenters = OutputArray.Create(mC);
+            using var cvCenters = OutputArray.Create(mC);
             double compactness = OpenCvSharp.Cv2.Kmeans(mA, k, mB, term, attempts, KMeansFlags.RandomCenters, cvCenters);
             //Report.End("Done.");
 

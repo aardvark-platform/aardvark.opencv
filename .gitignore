@@ -36,3 +36,4 @@ Aardvark.log
 .idea
 src/Aardvark.sln.DotSettings.user
 build_minimal
+**.DotSettings.User

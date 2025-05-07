@@ -169,7 +169,7 @@ namespace Aardvark.OpenCV
 
             // This already takes the handedness of the image coordinate system into account.
             // See: https://docs.opencv.org/4.10.0/da/d54/group__imgproc__transform.html#gafbbc470ce83812914a70abfb604f4326
-            var rotMat =
+            using var rotMat =
                 Cv2.GetRotationMatrix2D(
                     new Point2f((float)srcCenter.X, (float)srcCenter.Y),
                     -angleInRadians.DegreesFromRadians(),
