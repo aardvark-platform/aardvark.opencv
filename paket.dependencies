@@ -2,7 +2,7 @@ framework: auto-detect
 source https://api.nuget.org/v3/index.json
 storage: none
 
-nuget Aardvark.Build               ~> 1.0.24
+nuget Aardvark.Build               ~> 2.0.4
 nuget FSharp.Core                  >= 8.0.0 lowest_matching: true
 
 nuget Aardvark.Base.Tensors        ~> 5.3.4
