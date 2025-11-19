@@ -1,11 +1,9 @@
 # Aardvark.OpenCV
 
-![Build](https://github.com/aardvark-platform/aardvark.opencv/workflows/Build/badge.svg)
-![Publish](https://github.com/aardvark-platform/aardvark.opencv/workflows/Publish/badge.svg)
-
-
-[![NuGet](https://badgen.net/nuget/v/Aardvark.OpenCV)](https://www.nuget.org/packages/Aardvark.OpenCV/)
-[![NuGet](https://badgen.net/nuget/dt/Aardvark.OpenCV)](https://www.nuget.org/packages/Aardvark.OpenCV/)
+[![Build](https://github.com/aardvark-platform/aardvark.opencv/actions/workflows/build.yml/badge.svg)](https://github.com/aardvark-platform/aardvark.opencv/actions/workflows/build.yml)
+[![Publish](https://github.com/aardvark-platform/aardvark.opencv/actions/workflows/publish.yml/badge.svg)](https://github.com/aardvark-platform/aardvark.opencv/actions/workflows/publish.yml)
+[![Nuget](https://img.shields.io/nuget/vpre/aardvark.opencv)](https://www.nuget.org/packages/aardvark.opencv/)
+[![Downloads](https://img.shields.io/nuget/dt/aardvark.opencv)](https://www.nuget.org/packages/aardvark.opencv/)
 
 Contains algorithms and utilities using OpenCV via the [OpenCVSharp](https://github.com/shimat/opencvsharp) wrapper for the Aardvark Platform.
 
