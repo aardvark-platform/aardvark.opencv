@@ -2,23 +2,17 @@ framework: auto-detect
 source https://api.nuget.org/v3/index.json
 storage: none
 
-nuget Aardvark.Build               ~> 2.0.4
-nuget FSharp.Core                  >= 8.0.0 lowest_matching: true
+nuget Aardvark.Build               ~> 2.0.7
+nuget FSharp.Core                  >= 10.0.100 lowest_matching: true
 
 nuget Aardvark.Base.Tensors        ~> 5.3.4
 
 nuget OpenCvSharp4                 ~> 4.10.0
 
-group Test
-    framework: auto-detect
-    storage: none
-    source https://api.nuget.org/v3/index.json
+// Tests
+nuget FsUnit                       ~> 6.0.0
+nuget NUnit                        ~> 4.2.2
+nuget NUnit3TestAdapter            ~> 4.6.0
+nuget Microsoft.NET.Test.Sdk       ~> 17.9.0
 
-    nuget FSharp.Core                      ~> 8.0.0
-
-    nuget FsUnit                           ~> 6.0.0
-    nuget NUnit                            ~> 4.2.2
-    nuget NUnit3TestAdapter                ~> 4.6.0
-    nuget Microsoft.NET.Test.Sdk           ~> 17.9.0
-
-    nuget BenchmarkDotNet                  ~> 0.14.0
+nuget BenchmarkDotNet              ~> 0.14.0
